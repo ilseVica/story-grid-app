@@ -67,6 +67,11 @@ DATABASE_URL="postgresql://postgres:contraseña@db.xxx.supabase.co:5432/postgres
 ```bash
 npm run db:push
 ```
+### 4.1 Instala dotenv (Si no lo tienes)
+
+```bash
+npm install dotenv
+```
 
 ### 5. Ejecutar la aplicación
 ```bash
