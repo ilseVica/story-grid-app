@@ -15,6 +15,7 @@ export const characters = pgTable("characters", {
   name: text("name").notNull(),
   role: text("role"),
   order: text("order").notNull(),
+  color: text("color"),
 });
 
 export const cards = pgTable("cards", {
@@ -23,6 +24,7 @@ export const cards = pgTable("cards", {
   chapterId: varchar("chapter_id").notNull(),
   content: text("content"),
   tag: text("tag"),
+  color: text("color"),
 });
 
 export const insertChapterSchema = createInsertSchema(chapters).omit({

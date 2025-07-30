@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ColorPicker } from "@/components/ui/color-picker";
 import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -27,20 +28,23 @@ interface CardEditorModalProps {
 export function CardEditorModal({ isOpen, cardData, onClose }: CardEditorModalProps) {
   const [tag, setTag] = useState("");
   const [content, setContent] = useState("");
+  const [color, setColor] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     if (cardData?.existingCard) {
       setTag(cardData.existingCard.tag || "");
       setContent(cardData.existingCard.content || "");
+      setColor(cardData.existingCard.color || null);
     } else {
       setTag("");
       setContent("");
+      setColor(null);
     }
   }, [cardData]);
 
   const createCardMutation = useMutation({
-    mutationFn: (data: { characterId: string; chapterId: string; content: string; tag: string }) =>
+    mutationFn: (data: { characterId: string; chapterId: string; content: string; tag: string; color: string | null }) =>
       apiRequest("POST", "/api/cards", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cards"] });
@@ -53,7 +57,7 @@ export function CardEditorModal({ isOpen, cardData, onClose }: CardEditorModalPr
   });
 
   const updateCardMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: { content: string; tag: string } }) =>
+    mutationFn: ({ id, data }: { id: string; data: { content: string; tag: string; color: string | null } }) =>
       apiRequest("PUT", `/api/cards/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cards"] });
@@ -71,6 +75,7 @@ export function CardEditorModal({ isOpen, cardData, onClose }: CardEditorModalPr
     const data = {
       content,
       tag,
+      color,
     };
 
     if (cardData.existingCard) {
@@ -139,6 +144,14 @@ export function CardEditorModal({ isOpen, cardData, onClose }: CardEditorModalPr
                 <SelectItem value="apoyo-técnico">Apoyo Técnico</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+          
+          <div>
+            <Label htmlFor="cardColor">Color de la Tarjeta</Label>
+            <ColorPicker 
+              value={color}
+              onChange={setColor}
+            />
           </div>
           
           <div>

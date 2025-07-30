@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS characters (
     id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     role TEXT,
-    "order" TEXT NOT NULL
+    "order" TEXT NOT NULL,
+    color TEXT
 );
 
 -- Tabla de tarjetas de contenido
@@ -26,7 +27,8 @@ CREATE TABLE IF NOT EXISTS cards (
     character_id VARCHAR NOT NULL,
     chapter_id VARCHAR NOT NULL,
     content TEXT,
-    tag TEXT
+    tag TEXT,
+    color TEXT
 );
 
 -- Opcional: Añadir índices para mejorar rendimiento
@@ -47,11 +49,13 @@ COMMENT ON COLUMN chapters."order" IS 'Orden del capítulo para mostrar en la in
 COMMENT ON COLUMN characters.name IS 'Nombre del personaje';
 COMMENT ON COLUMN characters.role IS 'Rol del personaje (ej: Protagonista, Antagonista)';
 COMMENT ON COLUMN characters."order" IS 'Orden del personaje para mostrar en la interfaz';
+COMMENT ON COLUMN characters.color IS 'Color personalizado del personaje en formato hexadecimal (ej: #8B5CF6)';
 
 COMMENT ON COLUMN cards.character_id IS 'ID del personaje asociado a esta tarjeta';
 COMMENT ON COLUMN cards.chapter_id IS 'ID del capítulo asociado a esta tarjeta';
 COMMENT ON COLUMN cards.content IS 'Contenido de la tarjeta - propósito del personaje en el capítulo';
 COMMENT ON COLUMN cards.tag IS 'Etiqueta de la tarjeta (introducción, conflicto, desarrollo, etc.)';
+COMMENT ON COLUMN cards.color IS 'Color personalizado de la tarjeta en formato hexadecimal (ej: #3B82F6)';
 
 -- Ejemplos de datos de prueba (opcional - descomenta si quieres datos de ejemplo)
 /*
@@ -65,9 +69,10 @@ INSERT INTO characters (name, role, "order") VALUES
     ('Marcus', 'Antagonista', '2'),
     ('Elena', 'Mentora', '3');
 
-INSERT INTO cards (character_id, chapter_id, content, tag) VALUES 
+INSERT INTO cards (character_id, chapter_id, content, tag, color) VALUES 
     ((SELECT id FROM characters WHERE name = 'Ana'), 
      (SELECT id FROM chapters WHERE title = 'Capítulo 1'), 
      'Ana descubre su poder especial y comienza su viaje', 
-     'introducción');
+     'introducción',
+     '#3B82F6');
 */

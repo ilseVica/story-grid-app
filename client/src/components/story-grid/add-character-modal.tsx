@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { type Character } from "@shared/schema";
+import { ColorPicker } from "@/components/ui/color-picker";
 
 interface AddCharacterModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ interface AddCharacterModalProps {
 export function AddCharacterModal({ isOpen, onClose }: AddCharacterModalProps) {
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
+  const [color, setColor] = useState<string | null>(null);
   const { toast } = useToast();
 
   const { data: characters = [] } = useQuery<Character[]>({
@@ -23,13 +25,14 @@ export function AddCharacterModal({ isOpen, onClose }: AddCharacterModalProps) {
   });
 
   const createCharacterMutation = useMutation({
-    mutationFn: (data: { name: string; role: string; order: string }) =>
+    mutationFn: (data: { name: string; role: string; order: string; color?: string | null }) =>
       apiRequest("POST", "/api/characters", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
       toast({ title: "Personaje creado exitosamente" });
       setName("");
       setRole("");
+      setColor(null);
       onClose();
     },
     onError: () => {
@@ -48,13 +51,15 @@ export function AddCharacterModal({ isOpen, onClose }: AddCharacterModalProps) {
     createCharacterMutation.mutate({
       name: name.trim(),
       role: role.trim(),
-      order: nextOrder
+      order: nextOrder,
+      color: color
     });
   };
 
   const handleClose = () => {
     setName("");
     setRole("");
+    setColor(null);
     onClose();
   };
 
@@ -83,6 +88,14 @@ export function AddCharacterModal({ isOpen, onClose }: AddCharacterModalProps) {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               placeholder="ej. Protagonista, Antagonista, Mentor, etc."
+            />
+          </div>
+          
+          <div>
+            <Label>Color del Personaje (Opcional)</Label>
+            <ColorPicker 
+              value={color} 
+              onChange={setColor}
             />
           </div>
         </div>

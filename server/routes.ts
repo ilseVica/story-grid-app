@@ -131,6 +131,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/cards/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedData = insertCardSchema.partial().parse(req.body);
+      const card = await storage.updateCard(id, validatedData);
+      res.json(card);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to move card" });
+    }
+  });
+
   app.delete("/api/cards/:id", async (req, res) => {
     try {
       const { id } = req.params;
